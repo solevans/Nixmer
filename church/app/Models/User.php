@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\UserType;
 
 class User extends Authenticatable
 {
@@ -46,6 +46,6 @@ class User extends Authenticatable
     ];
     
     public function userType(){
-        return $this->belongsTo(UserType::class,'utid');
+        return $this->belongsTo(UserType::class,'user_type_id','utid');
     }
 }

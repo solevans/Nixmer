@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserLog;
 
 class LoginController extends Controller
 {
@@ -38,6 +39,7 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+        $this->middleware('auth')->only('logout');
     }
     
     public function username()
@@ -46,10 +48,11 @@ class LoginController extends Controller
     }
 
     protected function attemptLogin(Request $request)
-    {
+    {        
         $credentials=$this->credentials($request);
-        $user=User::where('username',$credentials['username']->first());
-        if($user && $this->guard()->attempt($credentials,$request->filled('remember'))){
+        //dd((new User)->getTable());
+        $user=User::where('username',$credentials['username'])->first();
+        if($user && $user->is_active_user && $this->guard()->attempt($credentials,$request->filled('remember'))){
             if($user->userType->usertype==='DEVELOPER'){
                 return redirect()->intended('/developer/dashboard');
             }elseif($user->userType->usertype==='ACCOUNTS'){
@@ -62,6 +65,7 @@ class LoginController extends Controller
                 return redirect()->intended('/member/dashboard');
             }
         }
+        return false;
     }
     
     protected function authenticated(Request $request, $user)
@@ -77,6 +81,35 @@ class LoginController extends Controller
         }elseif($user->userType->usertype==='MEMBER USER'){
             return redirect()->intended('/member/dashboard');
         }
-        return redirect()->intended('/');
+        
+        UserLog::create([
+            'user_id'=>$user->id,
+            'login_time'=>now(),
+            'machine_name'=>$request->server('SERVER_NAME'),
+            'machine_ip'=>$request->ip()
+        ]);
+        
+        return redirect()->intended('/');      
+    }
+
+    public function logout(Request $request)
+    {
+        $userlog=UserLog::where('user_id', auth()->user()->id)
+            ->whereNull('logout')
+            ->orderBy('login_time')
+            ->first();
+
+        if($userlog){
+            $userlog->update([
+                'logout_time'=>now(),
+                'is_proper_logout'=>true
+            ]);
+        }
+
+        $this->guard()->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        redirect('/');
     }
 }
