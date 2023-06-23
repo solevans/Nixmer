@@ -54,40 +54,43 @@ class LoginController extends Controller
         $user=User::where('username',$credentials['username'])->first();
         if($user && $user->is_active_user && $this->guard()->attempt($credentials,$request->filled('remember'))){
             if($user->userType->usertype==='DEVELOPER'){
-                return redirect()->intended('/developer/dashboard');
+                return redirect()->intended('/developer/index');
             }elseif($user->userType->usertype==='ACCOUNTS'){
-                return redirect()->intended('/accounts/dashboard');
+                return redirect()->intended('/accounts/index');
             }elseif($user->userType->usertype==='ENTRY CLERK'){
-                return redirect()->intended('/entryclerk/dashboard');
+                return redirect()->intended('/entryclerk/index');
             }elseif($user->userType->usertype==='SYSTEM ADMINISTRATOR'){
-                return redirect()->intended('/admin/dashboard');
+                return redirect()->intended('/admin/index');
             }elseif($user->userType->usertype==='MEMBER USER'){
-                return redirect()->intended('/member/dashboard');
+                return redirect()->intended('/member/index');
             }
         }
         return false;
     }
     
     protected function authenticated(Request $request, $user)
-    {
-        if($user->userType->usertype==='DEVELOPER'){
-            return redirect()->intended('/developer/dashboard');
-        }elseif($user->userType->usertype==='ACCOUNTS'){
-            return redirect()->intended('/accounts/dashboard');
-        }elseif($user->userType->usertype==='ENTRY CLERK'){
-            return redirect()->intended('/entryclerk/dashboard');
-        }elseif($user->userType->usertype==='SYSTEM ADMINISTRATOR'){
-            return redirect()->intended('/admin/dashboard');
-        }elseif($user->userType->usertype==='MEMBER USER'){
-            return redirect()->intended('/member/dashboard');
-        }
-        
+    {        //dd($user->uid);
+        $user->load('userType');
         UserLog::create([
-            'user_id'=>$user->id,
+            'user_id'=>$user->uid,
             'login_time'=>now(),
             'machine_name'=>$request->server('SERVER_NAME'),
             'machine_ip'=>$request->ip()
         ]);
+
+        if($user->userType->usertype==='DEVELOPER'){
+            return redirect()->intended('/developer/index');
+        }elseif($user->userType->usertype==='ACCOUNTS'){
+            return redirect()->intended('/accounts/index');
+        }elseif($user->userType->usertype==='ENTRY CLERK'){
+            return redirect()->intended('/entryclerk/index');
+        }elseif($user->userType->usertype==='SYSTEM ADMINISTRATOR'){
+            return redirect()->intended('/admin/index');
+        }elseif($user->userType->usertype==='MEMBER USER'){
+            return redirect()->intended('/member/index');
+        }
+        
+        
         
         return redirect()->intended('/');      
     }

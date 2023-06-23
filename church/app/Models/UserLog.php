@@ -9,7 +9,15 @@ class UserLog extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
     protected $table='tbluser_logins';
+    protected $primaryKey = 'logid';
+    
+    protected $dates=[
+        'login_time',
+        'logout_time'
+    ];
+
     protected $fillable = [
         'user_id',
         'login_time',
@@ -18,4 +26,9 @@ class UserLog extends Model
         'machine_name',
         'machine_ip',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'uid');
+    }
 }
