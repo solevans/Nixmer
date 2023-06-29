@@ -50,7 +50,6 @@ class LoginController extends Controller
     protected function attemptLogin(Request $request)
     {        
         $credentials=$this->credentials($request);
-        //dd((new User)->getTable());
         $user=User::where('username',$credentials['username'])->first();
         if($user && $user->is_active_user && $this->guard()->attempt($credentials,$request->filled('remember'))){
             if($user->userType->usertype==='DEVELOPER'){
@@ -70,7 +69,6 @@ class LoginController extends Controller
     
     protected function authenticated(Request $request, $user)
     {        //dd($user->uid);
-        $user->load('userType');
         UserLog::create([
             'user_id'=>$user->uid,
             'login_time'=>now(),

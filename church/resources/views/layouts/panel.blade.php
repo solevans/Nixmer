@@ -1,3 +1,7 @@
+<?php
+use Illuminate\Support\Facades\Auth;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,28 +20,31 @@
         <ul>
             <!-- Common Sidebar Links -->
             <li><a href="#">Dashboard</a></li>
-@dd(Auth::user()->userType->usertype)
-            {{-- <!-- Developer Links -->
-            @if(Auth::user()->userType->usertype === 'DEVELOPER')
-                <li><a href="#">Developer Link 1</a></li>
-                <li><a href="#">Developer Link 2</a></li>
-            @elseif(Auth::user()->userType->usertype === 'ACCOUNTS')
-                <!-- Accounts Links -->
-                <li><a href="#">Accounts Link 1</a></li>
-                <li><a href="#">Accounts Link 2</a></li>
-            @elseif(Auth::user()->userType->usertype === 'ENTRY CLERK')
-                <!-- Entry Clerk Links -->
-                <li><a href="#">Entry Clerk Link 1</a></li>
-                <li><a href="#">Entry Clerk Link 2</a></li>
-            @elseif(Auth::user()->userType->usertype === 'SYSTEM ADMINISTRATOR')
-                <!-- System Administrator Links -->
-                <li><a href="#">System Administrator Link 1</a></li>
-                <li><a href="#">System Administrator Link 2</a></li>
-            @elseif(Auth::user()->userType->usertype === 'MEMBER USER')
-                <!-- Member User Links -->
-                <li><a href="#">Member User Link 1</a></li>
-                <li><a href="#">Member User Link 2</a></li>
-            @endif --}}
+            @auth
+            @dd(Auth::user()->userType->usertype);
+                    <!-- Developer Links -->
+                @if(Auth::user()->userType->usertype === 'DEVELOPER')
+                    <li><a href="#">Developer Link 1</a></li>
+                    <li><a href="#">Developer Link 2</a></li>
+                @elseif(Auth::user()->userType->usertype === 'ACCOUNTS')
+                    <!-- Accounts Links -->
+                    <li><a href="#">Accounts Link 1</a></li>
+                    <li><a href="#">Accounts Link 2</a></li>
+                @elseif(Auth::user()->userType->usertype === 'ENTRY CLERK')
+                    <!-- Entry Clerk Links -->
+                    <li><a href="#">Entry Clerk Link 1</a></li>
+                    <li><a href="#">Entry Clerk Link 2</a></li>
+                @elseif(Auth::user()->userType->usertype === 'SYSTEM ADMINISTRATOR')
+                    <!-- System Administrator Links -->
+                    <li><a href="#">System Administrator Link 1</a></li>
+                    <li><a href="#">System Administrator Link 2</a></li>
+                @elseif(Auth::user()->userType->usertype === 'MEMBER USER')
+                    <!-- Member User Links -->
+                    <li><a href="#">Member User Link 1</a></li>
+                    <li><a href="#">Member User Link 2</a></li>
+                @endif
+            @endauth
+            
 
             <li><a href="#">Profile</a></li>
             <li><a href="#">Logout</a></li>            
@@ -55,16 +62,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ml-auto">
-                        <!-- Navbar Links -->
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
-                        </li>
+                       
                     </ul>
                 </div>
             </div>
